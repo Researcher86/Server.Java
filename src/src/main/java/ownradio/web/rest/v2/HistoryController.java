@@ -1,5 +1,6 @@
 package ownradio.web.rest.v2;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.UUID;
  *
  * @author Alpenov Tanat
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/v2/histories")
 public class HistoryController {
@@ -37,7 +39,7 @@ public class HistoryController {
 	}
 
 	@RequestMapping(value = "/{deviceId}/{trackId}", method = RequestMethod.POST)
-	public ResponseEntity save(@PathVariable UUID deviceId, @PathVariable UUID trackId, History history) {
+	public ResponseEntity save(@PathVariable UUID deviceId, @PathVariable UUID trackId, @RequestBody History history) {
 		try {
 			Track track = trackService.getById(trackId);
 			Device device = deviceService.getById(deviceId);

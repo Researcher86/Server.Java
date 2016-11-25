@@ -1,12 +1,14 @@
 package ownradio.web.rest.v2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ownradio.domain.Device;
@@ -62,22 +64,31 @@ public class HistoryControllerTest {
 		device = new Device();
 	}
 
+	@Data
+	static class HistoryDTO {
+		private String lastListen = "2016-12-25";
+		private String isListen = "-1"; // 1, -1
+		private String method = "Test";
+	}
+
 	@Test
 	public void saveStatusIsOk() throws Exception {
 		given(this.userService.getById(USER_UUID)).willReturn(user);
 		given(this.trackService.getById(TRACK_UUID)).willReturn(track);
 		given(this.deviceService.getById(DEVICE_UUID)).willReturn(device);
 
+		System.out.println(mapper.writeValueAsString(new HistoryDTO()));
+
 		mockMvc.perform(post("/api/v2/histories/{deviceId}/{trackId}", DEVICE_UUID, TRACK_UUID)
-				.param("lastListen", "12/12/2016")
-				.param("isListen", "1")
-				.param("method", "method")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(mapper.writeValueAsString(new HistoryDTO()))
 		)
 				.andDo(print())
 				.andExpect(
 						status().isOk()
 				);
 	}
+
 
 	@Test
 	public void saveStatusIsInternalServerError() throws Exception {
@@ -87,10 +98,10 @@ public class HistoryControllerTest {
 
 		doThrow(RuntimeException.class).when(this.historyService).save(any(History.class));
 
+
 		mockMvc.perform(post("/api/v2/histories/{deviceId}/{trackId}", DEVICE_UUID, TRACK_UUID)
-				.param("lastListen", "12/12/2016")
-				.param("isListen", "1")
-				.param("method", "method")
+				.contentType(MediaType.APPLICATION_JSON_UTF8)
+				.content(mapper.writeValueAsString(new HistoryDTO()))
 		)
 				.andDo(print())
 				.andExpect(

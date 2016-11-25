@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ownradio.domain.Device;
 import ownradio.domain.Track;
@@ -59,7 +56,7 @@ public class TrackController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity save(TrackDTO trackDTO) {
+	public ResponseEntity save(@RequestBody TrackDTO trackDTO) {
 		if (trackDTO.getMusicFile().isEmpty()) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
