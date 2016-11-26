@@ -27,7 +27,7 @@ public class History extends AbstractEntity {
 	@JoinColumn(name = "track_id")
 	private Track track;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(nullable = false)
 	private Date lastListen;
 
