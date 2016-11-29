@@ -53,9 +53,9 @@ public class HistoryController {
 
 			historyService.save(history);
 
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity(history, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity(history, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

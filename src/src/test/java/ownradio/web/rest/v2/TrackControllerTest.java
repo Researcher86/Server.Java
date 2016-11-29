@@ -105,7 +105,7 @@ public class TrackControllerTest {
 	public void saveStatusIsBadRequest() throws Exception {
 		mockMvc.perform(fileUpload("/api/v2/tracks")
 				.file(emptyFile)
-				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
+//				.accept(MediaType.APPLICATION_JSON_UTF8_VALUE)
 				.param("fileGuid", TRACK_UUID.toString())
 				.param("fileName", correctFile.getOriginalFilename())
 				.param("filePath", PATH)

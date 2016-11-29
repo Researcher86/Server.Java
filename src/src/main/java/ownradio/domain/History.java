@@ -29,6 +29,7 @@ public class History extends AbstractEntity {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastListen;
 
 	@Column(nullable = false)

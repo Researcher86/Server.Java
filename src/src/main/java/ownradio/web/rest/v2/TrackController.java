@@ -56,7 +56,7 @@ public class TrackController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity save(@RequestBody TrackDTO trackDTO) {
+	public ResponseEntity save(TrackDTO trackDTO) {
 		if (trackDTO.getMusicFile().isEmpty()) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}

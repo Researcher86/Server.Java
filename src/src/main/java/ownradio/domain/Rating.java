@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -30,9 +31,10 @@ public class Rating extends AbstractEntity {
 	@JoinColumn(name = "track_id")
 	private Track track;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(nullable = false)
-	private Date lastListen;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Calendar lastListen;
 
 	@Column(nullable = false)
 	private Integer ratingSum;

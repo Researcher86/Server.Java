@@ -12,6 +12,7 @@ import ownradio.domain.History;
 import ownradio.domain.Track;
 import ownradio.domain.User;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -43,13 +44,13 @@ public class HistoryRepositoryTest {
 	@Test
 	public void createdAt() throws Exception {
 		assertThat(history.getCreatedAt(), not(nullValue()));
-		assertThat(history.getCreatedAt().toString(), is(new Date().toString()));
+		assertThat(history.getCreatedAt().getTime().toString(), is(Calendar.getInstance().getTime().toString()));
 	}
 
 	@Test
 	public void updatedAt() throws Exception {
 		assertThat(history.getCreatedAt(), not(nullValue()));
-		assertThat(history.getCreatedAt().toString(), is(new Date().toString()));
+		assertThat(history.getCreatedAt().getTime().toString(), is(Calendar.getInstance().getTime().toString()));
 		assertThat(history.getUpdatedAt(), is(nullValue()));
 
 		History storeHistory = historyRepository.findOne(history.getId());
@@ -57,10 +58,10 @@ public class HistoryRepositoryTest {
 		historyRepository.saveAndFlush(storeHistory);
 
 		assertThat(storeHistory.getCreatedAt(), not(nullValue()));
-		assertThat(storeHistory.getCreatedAt().toString(), is(history.getCreatedAt().toString()));
+		assertThat(storeHistory.getCreatedAt().getTime().toString(), is(history.getCreatedAt().getTime().toString()));
 
 		assertThat(storeHistory.getUpdatedAt(), not(nullValue()));
-		assertThat(storeHistory.getUpdatedAt().toString(), is(new Date().toString()));
+		assertThat(storeHistory.getUpdatedAt().getTime().toString(), is(Calendar.getInstance().getTime().toString()));
 	}
 
 
