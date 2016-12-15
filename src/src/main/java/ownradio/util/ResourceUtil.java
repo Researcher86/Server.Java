@@ -1,5 +1,13 @@
 package ownradio.util;
 
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +18,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -65,5 +74,22 @@ public class ResourceUtil {
 
 		return ResourceBundle.getBundle(MESSAGE_BASE_NAME, Locale.getDefault(), loader);
 	}
+
+	public static void readMetaDataFromMediaFile(File file) {
+		AudioFile f = null;
+
+		try {
+			f = AudioFileIO.read(file);
+		} catch (CannotReadException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Tag tag = f.getTag();
+
+		System.out.println(tag.getFirst(FieldKey.ARTIST));
+		System.out.println(tag.getFirst(FieldKey.TITLE));
+	}
+
 
 }
