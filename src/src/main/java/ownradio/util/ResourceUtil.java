@@ -75,23 +75,22 @@ public class ResourceUtil {
 		return ResourceBundle.getBundle(MESSAGE_BASE_NAME, Locale.getDefault(), loader);
 	}
 
-	public static void readMetaDataFromMediaFile(File file) {
-		AudioFile f = null;
-
-		// http://www.jthink.net/jaudiotagger/examples_read.jsp
-
-		try {
-			f = AudioFileIO.read(file);
-		} catch (CannotReadException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Tag tag = f.getTag();
-
-		System.out.println(tag.getFirst(FieldKey.ARTIST));
-		System.out.println(tag.getFirst(FieldKey.TITLE));
-	}
-
+//	public static void readMetaDataFromMediaFile(File file) {
+//		AudioFile f = null;
+//
+//		// http://www.jthink.net/jaudiotagger/examples_read.jsp
+//
+//		try {
+//			f = AudioFileIO.read(file);
+//		} catch (CannotReadException e) {
+//			e.printStackTrace();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		Tag tag = f.getTag();
+//
+//		System.out.println(tag.getFirst(FieldKey.ARTIST));
+//		System.out.println(tag.getFirst(FieldKey.TITLE));
+//	}
 
 }
