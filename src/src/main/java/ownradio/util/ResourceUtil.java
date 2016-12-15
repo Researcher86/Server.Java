@@ -78,6 +78,8 @@ public class ResourceUtil {
 	public static void readMetaDataFromMediaFile(File file) {
 		AudioFile f = null;
 
+		// http://www.jthink.net/jaudiotagger/examples_read.jsp
+
 		try {
 			f = AudioFileIO.read(file);
 		} catch (CannotReadException e) {
