@@ -24,21 +24,20 @@ import java.util.Date;
 public class History extends AbstractEntity {
 
 	@ManyToOne
-	@JoinColumn(name = "track_id")
+	@JoinColumn(name = "trackid")
 	private Track track;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@Column(name = "lastlisten", nullable = false)
 	private Date lastListen;
 
-	@Column(nullable = false)
-	private Integer isListen; // 1, -1
+	@Column(name = "islisten", nullable = false)
+	private int isListen; // 1, -1
 
 	@Column(nullable = false)
 	private String method;
 
 	@ManyToOne
-	@JoinColumn(name = "device_id")
+	@JoinColumn(name = "deviceid")
 	private Device device;
 }

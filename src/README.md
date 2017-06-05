@@ -36,7 +36,7 @@ Web API
 
 ##### HttpStatus
 * `200, "OK"` – в теле ответа будет лежать трек
-* `404, "Not Found"` – если трек с таким id не найден
+* `404, "Not Found"` – если трек с таким recid не найден
 
 ### Получение следующего трека с сервера
 ##### GET /api/v2/tracks/{deviceId}/next
@@ -44,7 +44,7 @@ Web API
 
 ##### HttpStatus
 * `200, "OK"` – в теле ответа будет лежать UUID трека
-* `404, "Not Found"` – если трек с таким id не найден
+* `404, "Not Found"` – если трек с таким recid не найден
 
 ### Сохранение истории треков
 ##### POST /api/v2/histories/{deviceId}/{trackId}

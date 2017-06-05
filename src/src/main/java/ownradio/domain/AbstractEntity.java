@@ -7,7 +7,6 @@ import ownradio.annotation.DisplayName;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,24 +26,21 @@ public abstract class AbstractEntity implements Serializable {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(unique = true)
-	private UUID id;
+	private UUID recid;
 
-	private String name;
+	private String recname;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar createdAt;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar updatedAt;
+	private Date reccreated;
+	private Date recupdated;
 
 	@PrePersist
 	public void beforePersist() {
-		setCreatedAt(Calendar.getInstance());
+		setReccreated(new Date());
 	}
 
 	@PreUpdate
 	public void beforeUpdate() {
-		setUpdatedAt(Calendar.getInstance());
+		setRecupdated(new Date());
 	}
 
 	@Override
@@ -54,12 +50,12 @@ public abstract class AbstractEntity implements Serializable {
 
 		AbstractEntity that = (AbstractEntity) o;
 
-		return id != null ? id.equals(that.id) : that.id == null;
+		return recid != null ? recid.equals(that.recid) : that.recid == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		return id != null ? id.hashCode() : 0;
+		return recid != null ? recid.hashCode() : 0;
 	}
 }

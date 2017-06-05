@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -24,18 +23,17 @@ import java.util.Date;
 @Table(name = "ratings")
 public class Rating extends AbstractEntity {
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "userid")
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "track_id")
+	@JoinColumn(name = "trackid")
 	private Track track;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar lastListen;
+	private Date lastlisten;
 
 	@Column(nullable = false)
-	private Integer ratingSum;
+	private Integer ratingsum;
 }
