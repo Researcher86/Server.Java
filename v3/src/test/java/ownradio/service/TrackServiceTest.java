@@ -6,7 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ownradio.domain.Device;
 import ownradio.domain.Track;
@@ -23,23 +26,23 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static ownradio.util.ResourceUtil.UPLOAD_DIR;
 
+@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
+@SpringBootTest
 public class TrackServiceTest {
-	@Mock
-	private TrackRepository trackRepository;
-
-	protected TrackService trackService;
+	@Autowired
+	private TrackService trackService;
 
 	private UUID userId = UUID.randomUUID();
 	private UUID trackId = UUID.randomUUID();
-	private UUID deviceId = UUID.randomUUID();
+	private UUID deviceId = UUID.fromString("7fcd3f5c-c512-4adb-b6b2-4dbf5e9dfd89");
 	private Track expected;
 
 	@Before
 	public void setUp() throws Exception {
-		trackService = new TrackServiceImpl(trackRepository);
 		expected = new Track();
 		expected.setRecid(trackId);
+		expected.setLocaldevicepathupload("123");
 
 		User user = new User();
 		user.setRecid(userId);
@@ -56,19 +59,13 @@ public class TrackServiceTest {
 
 	@Test
 	public void getNextTrackId() throws Exception {
-		given(this.trackRepository.getNextTrackId(trackId)).willReturn(trackId);
-
-		UUID actual = trackService.getNextTrackId(trackId);
-
-		assertThat(actual, equalTo(expected.getRecid()));
+		UUID actual = trackService.getNextTrackId(deviceId);
 	}
 
 	@Test
 	public void save() throws Exception {
 		MockMultipartFile correctFile = new MockMultipartFile("file", "test.mp3", "text/plain", "Text".getBytes());
 
-		given(this.trackRepository.registerTrack(expected.getRecid(), expected.getLocaldevicepathupload(), expected.getPath(), expected.getDevice().getRecid())).willReturn(true);
-		given(this.trackRepository.findOne(expected.getRecid())).willReturn(expected);
 		trackService.save(expected, correctFile);
 
 		assertThat(new File(expected.getPath()).exists(), is(true));

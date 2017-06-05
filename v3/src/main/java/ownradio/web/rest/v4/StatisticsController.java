@@ -9,9 +9,9 @@ import ownradio.domain.Device;
 import ownradio.domain.DownloadTrack;
 import ownradio.domain.TracksHistory;
 import ownradio.domain.UsersRating;
-import ownradio.repository.DeviceRepository;
 import ownradio.service.DeviceService;
 import ownradio.service.DownloadTrackService;
+import ownradio.service.HistoryService;
 import ownradio.service.UserService;
 
 import java.util.List;
@@ -29,19 +29,20 @@ public class StatisticsController {
 	private final UserService userService;
 	private final DeviceService deviceService;
 	private final DownloadTrackService downloadTrackService;
+	private final HistoryService historyService;
 
 	@Autowired
-	public StatisticsController(UserService userService, DeviceService deviceService, DownloadTrackService downloadTrackService){
+	public StatisticsController(UserService userService, DeviceService deviceService, DownloadTrackService downloadTrackService, HistoryService historyService){
 		this.userService = userService;
 		this.deviceService = deviceService;
 		this.downloadTrackService = downloadTrackService;
-
+		this.historyService = historyService;
 	}
 
 	@RequestMapping(value = "/{userId}/getuserdevices", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserDevices(@PathVariable UUID userId) {
 		try {
-			List<Device> devices = deviceService.getByUserid(userId);
+			List<Device> devices = deviceService.getUserDevices(userId);
 
 			return new ResponseEntity<>(devices, HttpStatus.OK);
 		}catch (Exception ex){
@@ -79,7 +80,7 @@ public class StatisticsController {
 	@RequestMapping(value = "/{deviceId}/{countTracks}/gettrackshistorybydevice", method = RequestMethod.GET)
 	public ResponseEntity<?> getTracksHistoryByDevice(@PathVariable UUID deviceId, @PathVariable Integer countTracks) {
 		try {
-			List<TracksHistory> tracksHistories = downloadTrackService.getTracksHistoryByDevice(deviceId, countTracks);
+			List<TracksHistory> tracksHistories = historyService.getTracksHistoryByDevice(deviceId, countTracks);
 			return new ResponseEntity<>(tracksHistories, HttpStatus.OK);
 		}catch (Exception ex){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

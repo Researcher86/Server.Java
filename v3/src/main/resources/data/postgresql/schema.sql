@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION getnexttrackid(IN i_deviceid UUID)
 	RETURNS SETOF UUID AS
-'
+$$
 DECLARE
 	i_userid UUID = i_deviceid;
 BEGIN
@@ -14,7 +14,7 @@ BEGIN
 		-- Добавляем нового пользователя
 		INSERT INTO users (recid, recname, reccreated) SELECT
 										   i_userid,
-										   ''New user recname'',
+										   'New user recname',
 										   now()
 		WHERE NOT EXISTS(SELECT recid FROM users WHERE recid = i_userid);
 
@@ -22,7 +22,7 @@ BEGIN
 		INSERT INTO devices (recid, userid, recname, reccreated) SELECT
 											 i_deviceid,
 											 i_userid,
-											 ''New device recname'',
+											 'New device recname',
 											 now();
 	ELSE
 		SELECT (SELECT userid
@@ -42,17 +42,17 @@ BEGIN
 	ORDER BY RANDOM()
 	LIMIT 1;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION getnexttrackid_string(i_deviceid UUID)
 	RETURNS SETOF CHARACTER VARYING AS
-'
+$$
 BEGIN
 	RETURN QUERY SELECT CAST(getnexttrackid(i_deviceid) AS CHARACTER VARYING);
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
@@ -62,7 +62,7 @@ CREATE OR REPLACE FUNCTION registertrack(
 	i_path                  CHARACTER VARYING,
 	i_deviceid              UUID)
 	RETURNS BOOLEAN AS
-'
+$$
 DECLARE
 	i_userid    UUID = i_deviceid;
 	i_historyid UUID;
@@ -90,7 +90,7 @@ BEGIN
 		-- Добавляем нового пользователя
 		INSERT INTO users (recid, recname, reccreated) SELECT
 						   i_userid,
-						   ''New user recname'',
+						   'New user recname',
 						   now()
 		WHERE NOT EXISTS(SELECT recid FROM users WHERE recid = i_userid);
 
@@ -98,7 +98,7 @@ BEGIN
 		INSERT INTO devices (recid, userid, recname, reccreated) SELECT
 							 i_deviceid,
 							 i_userid,
-							 ''New device recname'',
+							 'New device recname',
 							 now();
 	ELSE
 		SELECT (SELECT userid
@@ -122,14 +122,14 @@ BEGIN
 
 	RETURN TRUE;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION getnexttrackid_v2(i_deviceid UUID)
 	RETURNS TABLE(track UUID, methodid INTEGER)
 AS
-'
+$$
 DECLARE
 	i_userid   UUID = i_deviceid;
 	rnd        INTEGER = (SELECT trunc(random() * 10)); -- получаем случайное число от 0 до 9
@@ -149,7 +149,7 @@ BEGIN
 			o_methodid
 		FROM ratings
 		WHERE userid = i_userid
-			  AND lastlisten < localtimestamp - INTERVAL ''1 day''
+			  AND lastlisten < localtimestamp - INTERVAL '1 day'
 			  AND ratingsum >= 0
 			  AND (SELECT isexist
 				   FROM tracks
@@ -195,7 +195,7 @@ BEGIN
 	LIMIT 1;
 	RETURN;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION getnexttrack(i_deviceid UUID)
@@ -205,7 +205,7 @@ CREATE OR REPLACE FUNCTION getnexttrack(i_deviceid UUID)
 	,	useridrecommended CHARACTER VARYING
 	,	txtrecommendedinfo	CHARACTER VARYING)
 AS
-'
+$$
 DECLARE
 	i_userid UUID = i_deviceid; -- в дальнейшем заменить получением userid по deviceid
 BEGIN
@@ -219,7 +219,7 @@ BEGIN
 		-- Добавляем нового пользователя
 		INSERT INTO users (recid, recname, reccreated) SELECT
 						   i_userid,
-						   ''New user recname'',
+						   'New user recname',
 						   now()
 		WHERE NOT EXISTS(SELECT recid FROM users WHERE recid = i_userid);
 
@@ -227,7 +227,7 @@ BEGIN
 		INSERT INTO devices (recid, userid, recname, reccreated) SELECT
 							 i_deviceid,
 							 i_userid,
-							 ''New device recname'',
+							 'New device recname',
 							 now();
 	ELSE
 		SELECT (SELECT userid
@@ -245,13 +245,13 @@ BEGIN
 			 nexttrack.txtrecommendedinfo
 		 FROM getnexttrackid_v10(i_deviceid) AS nexttrack;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION calculateratios()
 	RETURNS boolean AS
-'
+$$
 DECLARE
 -- объявляем курсор и запрос для него
 		curs1 CURSOR FOR SELECT * FROM(
@@ -298,13 +298,13 @@ BEGIN
 	END IF;
 	RETURN TRUE;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION updateratios(i_userid uuid)
 	RETURNS boolean AS
-'
+$$
 -- Функция обновляет таблицу коэффициентов схожести интересов для выбранного пользователя
 DECLARE
 	-- объявляем курсор и запрос для него
@@ -351,7 +351,7 @@ BEGIN
 
 RETURN TRUE;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
@@ -360,7 +360,7 @@ CREATE OR REPLACE FUNCTION getnexttrackid_v8(IN i_deviceid uuid)
 				  useridrecommended uuid
 	,	txtrecommendedinfo character varying
 	) AS
-'
+$$
 DECLARE
 	i_userid   UUID = i_deviceid;
 	rnd        INTEGER = (SELECT trunc(random() * 1001));
@@ -394,7 +394,7 @@ BEGIN
 			(SELECT CAST((null) AS CHARACTER VARYING))
 		FROM ratings
 		WHERE userid = i_userid
-			  AND lastlisten < localtimestamp - INTERVAL ''1 day''
+			  AND lastlisten < localtimestamp - INTERVAL '1 day'
 			  AND ratingsum >= 0
 			  AND (SELECT isexist
 				   FROM tracks
@@ -413,7 +413,7 @@ BEGIN
 					   WHERE recid = trackid) != 0)
 			  AND trackid NOT IN (SELECT trackid
 								  FROM downloadtracks
-								  WHERE reccreated > localtimestamp - INTERVAL ''1 day'')
+								  WHERE reccreated > localtimestamp - INTERVAL '1 day')
 		ORDER BY RANDOM()
 		LIMIT 1;
 
@@ -456,7 +456,7 @@ BEGIN
 			  AND trackid NOT IN (SELECT trackid
 								  FROM downloadtracks
 								  WHERE deviceid = i_deviceid
-										AND reccreated > localtimestamp - INTERVAL ''1 day'')
+										AND reccreated > localtimestamp - INTERVAL '1 day')
 			  AND (SELECT isexist
 				   FROM tracks
 				   WHERE recid = trackid) = 1
@@ -501,7 +501,7 @@ BEGIN
 			recid,
 			o_methodid,
 			exceptusers[i],
-			(SELECT CAST((''рекомендовано от пользователя с которым не было пересечений'') AS CHARACTER VARYING))
+			(SELECT CAST(('рекомендовано от пользователя с которым не было пересечений') AS CHARACTER VARYING))
 		FROM tracks
 		WHERE recid IN (SELECT trackid FROM ratings WHERE userid = exceptusers[i] AND ratingsum >= 0)
 			  AND recid NOT IN (SELECT trackid FROM ratings WHERE userid = i_userid)
@@ -510,7 +510,7 @@ BEGIN
 			  AND (length > 120 OR length IS NULL)
 			  AND recid NOT IN (SELECT trackid
 								FROM downloadtracks
-								WHERE reccreated > localtimestamp - INTERVAL ''1 day'')
+								WHERE reccreated > localtimestamp - INTERVAL '1 day')
 		ORDER BY RANDOM()
 		LIMIT 1;
 		-- Если нашли что рекомендовать - выходим из функции
@@ -539,7 +539,7 @@ BEGIN
 		  AND (length > 120 OR length IS NULL)
 		  AND recid NOT IN (SELECT trackid
 							FROM downloadtracks
-							WHERE reccreated > localtimestamp - INTERVAL ''1 day'')
+							WHERE reccreated > localtimestamp - INTERVAL '1 day')
 	ORDER BY RANDOM()
 	LIMIT 1;
 
@@ -564,12 +564,12 @@ BEGIN
 	LIMIT 1;
 	RETURN;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION getusersrating(IN i_count integer)
 	RETURNS TABLE(tuserid character varying, treccreated character varying, trecname character varying, trecupdated character varying, towntracks bigint, tlasttracks bigint) AS
-'
+$$
 
 BEGIN
 	IF i_count < 0 THEN
@@ -583,21 +583,21 @@ FROM
 		GROUP BY u.recid) res1
 	LEFT OUTER JOIN (SELECT d.reccreated, dev.userid FROM downloadtracks d
 				INNER JOIN devices dev
-				ON dev.recid= d.deviceid AND d.reccreated > localtimestamp - INTERVAL ''1 day'') res2
+				ON dev.recid= d.deviceid AND d.reccreated > localtimestamp - INTERVAL '1 day') res2
 		ON res2.userid = res1.recid
 	GROUP BY res1.recid, res1.reccreated, res1.recname, res1.recupdated, res1.owntracks
 	ORDER BY downloadtracks DESC, owntracks DESC
 	LIMIT i_count;
 
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION getlasttracks(
 	IN i_deviceid uuid,
 	IN i_count integer)
 	RETURNS TABLE(recid uuid, reccreated timestamp without time zone, recname character varying, recupdated timestamp without time zone, deviceid uuid, trackid uuid, methodid integer, txtrecommendinfo character varying, userrecommend uuid) AS
-'
+$$
 BEGIN
 	IF i_count < 0 THEN
 		i_count = null;
@@ -608,23 +608,23 @@ RETURN QUERY SELECT *
 	ORDER BY downloadtracks.reccreated DESC
 	LIMIT i_count;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION getuserdevices(IN i_userid uuid)
 	RETURNS TABLE(recid uuid, reccreated timestamp without time zone, recname character varying, recupdated timestamp without time zone, userid uuid) AS
-'
+$$
 BEGIN
 	RETURN QUERY
 	SELECT * FROM devices WHERE devices.userid = i_userid;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION getnexttrackid_v10(IN i_deviceid uuid)
 	RETURNS TABLE(track uuid, methodid integer, useridrecommended uuid, txtrecommendedinfo character varying) AS
-'
+$$
 DECLARE
 	i_userid   UUID = i_deviceid; --пока не реалезовано объединение пользователей - гуиды одинаковые
 	rnd        INTEGER = (SELECT trunc(random() * 1001)); -- генерируем случайное целое число в диапазоне от 1 до 1000
@@ -661,7 +661,7 @@ BEGIN
 			(SELECT CAST((null) AS CHARACTER VARYING))
 		FROM ratings
 		WHERE userid = i_userid
-			  AND lastlisten < localtimestamp - INTERVAL ''1 day''
+			  AND lastlisten < localtimestamp - INTERVAL '1 day'
 			  AND ratingsum >= 0
 			  AND (SELECT isexist
 				   FROM tracks
@@ -680,7 +680,7 @@ BEGIN
 					   WHERE recid = trackid) != 0)
 			  AND trackid NOT IN (SELECT trackid
 								  FROM downloadtracks
-								  WHERE reccreated > localtimestamp - INTERVAL ''1 day'')
+								  WHERE reccreated > localtimestamp - INTERVAL '1 day')
 		ORDER BY RANDOM()
 		LIMIT 1);
 
@@ -715,7 +715,7 @@ BEGIN
 			trackid,
 			o_methodid,
 			arrusers[i],
-			(SELECT CAST ((concat(''Коэффициент схожести '', ratio)) AS CHARACTER VARYING)
+			(SELECT CAST ((concat('Коэффициент схожести ', ratio)) AS CHARACTER VARYING)
 			 FROM ratios
 			 WHERE userid1 = i_userid AND userid2 = arrusers[i] OR userid2 = i_userid AND userid1 = arrusers[i]  LIMIT 1)
 		FROM ratings
@@ -725,7 +725,7 @@ BEGIN
 			  AND trackid NOT IN (SELECT trackid
 								  FROM downloadtracks
 								  WHERE deviceid = i_deviceid
-										AND reccreated > localtimestamp - INTERVAL ''1 day'')
+										AND reccreated > localtimestamp - INTERVAL '1 day')
 			  AND (SELECT isexist
 				   FROM tracks
 				   WHERE recid = trackid) = 1
@@ -772,7 +772,7 @@ BEGIN
 			recid,
 			o_methodid,
 			exceptusers[i],
-			(SELECT CAST((''рекомендовано от пользователя с которым не было пересечений'') AS CHARACTER VARYING))
+			(SELECT CAST(('рекомендовано от пользователя с которым не было пересечений') AS CHARACTER VARYING))
 		FROM tracks
 		WHERE recid IN (SELECT trackid FROM ratings WHERE userid = exceptusers[i] AND ratingsum >= 0)
 			  AND recid NOT IN (SELECT trackid FROM ratings WHERE userid = i_userid)
@@ -781,7 +781,7 @@ BEGIN
 			  AND (length > 120 OR length IS NULL)
 			  AND recid NOT IN (SELECT trackid
 								FROM downloadtracks
-								WHERE reccreated > localtimestamp - INTERVAL ''1 day'')
+								WHERE reccreated > localtimestamp - INTERVAL '1 day')
 		ORDER BY RANDOM()
 		LIMIT 1);
 		-- Если нашли что рекомендовать - выходим из функции
@@ -812,7 +812,7 @@ BEGIN
 		  AND (length > 120 OR length IS NULL)
 		  AND recid NOT IN (SELECT trackid
 							FROM downloadtracks
-							WHERE reccreated > localtimestamp - INTERVAL ''1 day'')
+							WHERE reccreated > localtimestamp - INTERVAL '1 day')
 	ORDER BY RANDOM()
 	LIMIT 1);
 
@@ -841,7 +841,7 @@ BEGIN
 	RETURN QUERY SELECT * FROM temp_track;
 	RETURN;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
@@ -850,7 +850,7 @@ CREATE OR REPLACE FUNCTION registerdevice(
 	i_deviceid uuid,
 	i_devicename character varying)
 	RETURNS boolean AS
-'
+$$
 BEGIN
 	-- Функция регистрации нового устройства
 
@@ -877,13 +877,13 @@ BEGIN
 	END IF;
 	RETURN TRUE;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION getlastdevices()
 	RETURNS TABLE(recid character varying) AS
-'
+$$
 BEGIN
 
 	RETURN QUERY SELECT CAST((dev.recid) AS CHARACTER VARYING)
@@ -895,7 +895,7 @@ BEGIN
 				 LIMIT 100;
 
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
@@ -903,7 +903,7 @@ CREATE OR REPLACE FUNCTION gettrackshistorybydevice(
 	IN i_deviceid uuid,
 	IN i_count integer)
 	RETURNS TABLE(downloadtrackrecid character varying, historyrecid character varying) AS
-'
+$$
 BEGIN
 	IF i_count < 0 THEN
 		i_count = null;
@@ -916,7 +916,7 @@ BEGIN
 				 ORDER BY d.reccreated DESC, h.reccreated DESC, h.lastlisten DESC
 				 LIMIT i_count;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 
@@ -925,7 +925,7 @@ DROP FUNCTION getnexttrack_v2(uuid);
 
 CREATE OR REPLACE FUNCTION getnexttrack_v2(IN i_deviceid uuid)
 	RETURNS TABLE(track character varying, method integer, useridrecommended character varying, txtrecommendedinfo character varying, timeexecute character varying) AS
-'
+$$
 DECLARE
 		declare t timestamptz := clock_timestamp(); -- запоминаем начальное время выполнения процедуры
 		i_userid UUID = i_deviceid; -- в дальнейшем заменить получением userid по deviceid
@@ -940,7 +940,7 @@ BEGIN
 		-- Добавляем нового пользователя
 		INSERT INTO users (recid, recname, reccreated) SELECT
 							   i_userid,
-							   ''New user recname'',
+							   'New user recname',
 							   now()
 						   WHERE NOT EXISTS(SELECT recid FROM users WHERE recid = i_userid);
 
@@ -948,7 +948,7 @@ BEGIN
 		INSERT INTO devices (recid, userid, recname, reccreated) SELECT
 							 i_deviceid,
 							 i_userid,
-							 ''New device recname'',
+							 'New device recname',
 							 now();
 	ELSE
 		SELECT (SELECT userid
@@ -967,7 +967,7 @@ BEGIN
 					 CAST((clock_timestamp() - t ) AS CHARACTER VARYING) -- возвращаем время выполнения процедуры
 				 FROM getnexttrackid_v13(i_deviceid) AS nexttrack;
 END;
-'
+$$
 LANGUAGE plpgsql;
 
 ALTER FUNCTION getnexttrack_v2(uuid) OWNER TO postgres;

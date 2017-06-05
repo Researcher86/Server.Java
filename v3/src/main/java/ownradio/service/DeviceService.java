@@ -1,6 +1,5 @@
 package ownradio.service;
 
-import org.springframework.data.jpa.repository.Query;
 import ownradio.domain.Device;
 
 import java.util.List;
@@ -16,7 +15,21 @@ public interface DeviceService {
 
 	Device getById(UUID uuid);
 
-	List<Device> getByUserid(UUID userid);
+	/**
+	 * Метод возвращает весь список устройств, с которых пользователь заходил в систему
+	 *
+	 * @param userId Идентификатор пользователя
+	 * @return Список пользовательских устройств
+	 */
+	List<Device> getUserDevices(UUID userId);
 
 	List<Device> getLastDevices();
+
+	/**
+	 * Регистрация нового устройства
+	 *
+	 * @param id   Идентификатор устройства
+	 * @param name Наименование
+	 */
+	void registerDevice(UUID id, String name);
 }

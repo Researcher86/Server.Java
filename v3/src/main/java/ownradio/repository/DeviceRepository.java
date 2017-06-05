@@ -1,11 +1,13 @@
 package ownradio.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ownradio.domain.Device;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Интерфейс репозитория, для хранения девайсов
@@ -13,12 +15,9 @@ import java.util.UUID;
  * @author Alpenov Tanat
  */
 public interface DeviceRepository extends JpaRepository<Device, UUID> {
-	@Query(value = "select * from devices where userid = ?1", nativeQuery = true)
-	List<Device> getUserDevices(UUID userid);
+	@Query(value = "select d from Device d where d.user.recid = ?1")
+	List<Device> findByUser(UUID userId);
 
-	@Query(value = "select * from registerdevice(?1, ?2)", nativeQuery = true)
-	boolean registerdevice(UUID deviceId, String deviceName);
-
-	@Query(value = "select * from getlastdevices()", nativeQuery = true)
-	List<String> getLastDevices();
+	@Query(value = "select d from DownloadTrack dt, Device d where dt.device = d order by dt.reccreated desc")
+	List<Device> getLastDevices(Pageable pageable);
 }

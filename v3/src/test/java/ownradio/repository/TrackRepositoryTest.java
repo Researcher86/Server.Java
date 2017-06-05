@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ownradio.domain.Device;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertTrue;
 
-@ActiveProfiles("prod")
+@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -46,10 +47,10 @@ public class TrackRepositoryTest {
 	public void getNextTrackId() throws Exception {
 		Set<UUID> trackSet = new HashSet<>();
 
-		for (int i = 0; i < 3; i++) {
-			UUID track = trackRepository.getNextTrackId(device.getRecid());
-			trackSet.add(track);
-		}
+//		for (int i = 0; i < 3; i++) {
+//			UUID track = trackRepository.getNextTrackId(device.getRecid(), new PageRequest(0, 1));
+//			trackSet.add(track);
+//		}
 
 		assertTrue(trackSet.size() > 1);
 	}

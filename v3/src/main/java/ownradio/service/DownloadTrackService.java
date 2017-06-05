@@ -15,6 +15,4 @@ public interface DownloadTrackService {
 	void save(DownloadTrack downloadTrack);
 
 	List<DownloadTrack> getLastTracksByDevice(UUID deviceId, Integer countTracks);
-
-	List<TracksHistory> getTracksHistoryByDevice(UUID deviceId, Integer countRows);
 }

@@ -1,6 +1,7 @@
 package ownradio.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ownradio.domain.DownloadTrack;
@@ -33,25 +34,10 @@ public class DownloadTrackServiceImpl implements DownloadTrackService {
 	@Override
 	@Transactional
 	public List<DownloadTrack> getLastTracksByDevice(UUID deviceId, Integer countTracks) {
-		return downloadTrackRepository.getLastTracksByDevice(deviceId, countTracks);
-	}
-
-	@Override
-	@Transactional
-	public List<TracksHistory> getTracksHistoryByDevice(UUID deviceId, Integer countRows){
-		List<TracksHistory> tracksHistories = new ArrayList<TracksHistory>();
-		List<Object[]> objects = downloadTrackRepository.getTracksHistoryByDevice(deviceId, countRows);
-		if (objects != null) {
-			for (int i = 0; i < objects.size(); i++) {
-				TracksHistory tracksHistory = new TracksHistory();
-				tracksHistory.setDownloadTrack(downloadTrackRepository.findOne(UUID.fromString((String) objects.get(i)[0])));
-				if((String) objects.get(i)[1] != null) tracksHistory.setHistory(historyRepository.findOne(UUID.fromString((String) objects.get(i)[1])));
-
-				tracksHistories.add(tracksHistory);
-			}
+		if (countTracks != null) {
+			return downloadTrackRepository.getLastTracksByDevice(deviceId, new PageRequest(0, countTracks));
 		} else {
-			return null;
+			return downloadTrackRepository.getLastTracksByDevice(deviceId, null);
 		}
-		return tracksHistories;
 	}
 }

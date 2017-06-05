@@ -2,13 +2,7 @@ package ownradio.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.HibernateException;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.id.AbstractUUIDGenerator;
-import org.hibernate.id.UUIDGenerationStrategy;
-import org.hibernate.id.UUIDGenerator;
-import ownradio.annotation.DisplayName;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,12 +20,8 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
-	@DisplayName(key = "id")
 	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid",  strategy="ownradio.util.IdOrGenerate")
 	@Column(unique = true)
-//	@Column(insertable=true, updatable=true, unique=true, nullable=false)
 	private UUID recid;
 
 	private String recname;
@@ -44,12 +34,15 @@ public abstract class AbstractEntity implements Serializable {
 
 	@PrePersist
 	public void beforePersist() {
-		setReccreated(Calendar.getInstance());
+		reccreated = Calendar.getInstance();
+		if (recid == null) {
+			recid = UUID.randomUUID();
+		}
 	}
 
 	@PreUpdate
 	public void beforeUpdate() {
-		setRecupdated(Calendar.getInstance());
+		recupdated = Calendar.getInstance();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package ownradio.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ownradio.domain.Device;
@@ -16,12 +17,6 @@ import java.util.UUID;
  */
 public interface DownloadTrackRepository extends JpaRepository<DownloadTrack, UUID> {
 
-	DownloadTrack findFirstByDeviceAndTrackOrderByReccreatedAsc(Device device, Track track);
-
-	@Query(value = "select * from getlasttracks(?1, ?2)", nativeQuery = true)
-	List<DownloadTrack> getLastTracksByDevice(UUID deviceid, Integer countTracks);
-
-	@Query(value = "select * from getTracksHistoryByDevice(?1, ?2)", nativeQuery = true)
-	List<Object[]> getTracksHistoryByDevice(UUID deviceId, Integer countRows);
-
+	@Query(value = "select dt from DownloadTrack dt where dt.device.recid = ?1 order by dt.reccreated desc")
+	List<DownloadTrack> getLastTracksByDevice(UUID deviceid, Pageable pageable);
 }
