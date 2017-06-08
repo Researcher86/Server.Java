@@ -70,27 +70,27 @@ public class HistoryServiceImpl implements HistoryService {
 	@Override
 	@Transactional
 	public List<TracksHistory> getTracksHistoryByDevice(UUID deviceId, Integer countRows){
-//		List<TracksHistory> tracksHistories = new ArrayList<TracksHistory>();
-//		List<Object[]> objects = historyRepository.getTracksHistoryByDevice(deviceId, countRows);
-//		if (objects != null) {
-//			for (int i = 0; i < objects.size(); i++) {
-//				TracksHistory tracksHistory = new TracksHistory();
-//				tracksHistory.setDownloadTrack(downloadTrackRepository.findOne(UUID.fromString((String) objects.get(i)[0])));
-//				if((String) objects.get(i)[1] != null) tracksHistory.setHistory(historyRepository.findOne(UUID.fromString((String) objects.get(i)[1])));
-//
-//				tracksHistories.add(tracksHistory);
-//			}
-//		} else {
-//			return null;
-//		}
-//		return tracksHistories;
+		List<TracksHistory> tracksHistories = new ArrayList<TracksHistory>();
+		List<Object[]> objects = historyRepository.getTracksHistoryByDevice(deviceId, countRows);
+		if (objects != null) {
+			for (int i = 0; i < objects.size(); i++) {
+				TracksHistory tracksHistory = new TracksHistory();
+				tracksHistory.setDownloadTrack(downloadTrackRepository.findOne(UUID.fromString((String) objects.get(i)[0])));
+				if((String) objects.get(i)[1] != null) tracksHistory.setHistory(historyRepository.findOne(UUID.fromString((String) objects.get(i)[1])));
+
+				tracksHistories.add(tracksHistory);
+			}
+		} else {
+			return null;
+		}
+		return tracksHistories;
 
 //		historyRepository.getTracksHistoryByDevice(deviceId, null);
 
-		if (countRows != null) {
-			return historyRepository.getTracksHistoryByDevice(deviceId, new PageRequest(0, countRows));
-		} else {
-			return historyRepository.getTracksHistoryByDevice(deviceId, null);
-		}
+//		if (countRows != null) {
+//			return historyRepository.getTracksHistoryByDevice(deviceId, new PageRequest(0, countRows));
+//		} else {
+//			return historyRepository.getTracksHistoryByDevice(deviceId, null);
+//		}
 	}
 }

@@ -16,18 +16,18 @@ import java.util.UUID;
  */
 public interface HistoryRepository extends JpaRepository<History, UUID> {
 
-//	@Query(value = "select * from getTracksHistoryByDevice(?1, ?2)", nativeQuery = true)
-//	List<Object[]> getTracksHistoryByDevice(UUID deviceId, Integer countRows);
+	@Query(value = "select * from getTracksHistoryByDevice(?1, ?2)", nativeQuery = true)
+	List<Object[]> getTracksHistoryByDevice(UUID deviceId, Integer countRows);
 
 //	@Query(value = "select new ownradio.domain.TracksHistory(dt, h) " +
 //			"from DownloadTrack dt left join History h where dt.device = h.device and dt.track = h.track and h.device.recid = ?1 " +
 //			"order by dt.reccreated desc, h.reccreated desc, h.lastListen desc"
 //	)
-	List<TracksHistory> getTracksHistoryByDevice(UUID deviceId, Pageable pageable);
+//	List<TracksHistory> getTracksHistoryByDevice(UUID deviceId, Pageable pageable);
 
 //	@Query(value = "select dt, h " +
 //			"from DownloadTrack dt left join History h where dt.device = h.device and dt.track = h.track and h.device.recid = ?1" +
 //			"order by dt.reccreated desc, h.reccreated desc, h.lastListen desc"
 //	)
-//	List<Object[]> getTracksHistoryByDevice2(UUID deviceId, Pageable pageable);
+//	List<Object[]> getTracksHistoryByDevice(UUID deviceId, Pageable pageable);
 }
