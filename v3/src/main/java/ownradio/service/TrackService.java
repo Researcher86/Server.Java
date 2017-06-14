@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ownradio.domain.NextTrack;
 import ownradio.domain.Track;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -22,4 +23,6 @@ public interface TrackService {
 	void save(Track track, MultipartFile file);
 
 	void setTrackInfo(UUID trackid);
+
+	Track getRecommendedTracks(UUID userId);
 }

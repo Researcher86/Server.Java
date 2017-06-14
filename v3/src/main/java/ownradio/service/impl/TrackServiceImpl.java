@@ -11,25 +11,31 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ownradio.domain.NextTrack;
 import ownradio.domain.Track;
+import ownradio.recommendation.*;
+import ownradio.repository.RatingRepository;
+import ownradio.repository.RatioRepository;
 import ownradio.repository.TrackRepository;
 import ownradio.service.DeviceService;
 import ownradio.service.TrackService;
 import ownradio.util.DecodeUtil;
 import ownradio.util.ResourceUtil;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TrackServiceImpl implements TrackService {
 
 	private final TrackRepository trackRepository;
 	private final DeviceService deviceService;
+	private final RatingRepository ratingRepository;
+	private final RatioRepository ratioRepository;
 
 	@Autowired
-	public TrackServiceImpl(TrackRepository trackRepository, DeviceService deviceService) {
+	public TrackServiceImpl(TrackRepository trackRepository, DeviceService deviceService, RatingRepository ratingRepository, RatioRepository ratioRepository) {
 		this.trackRepository = trackRepository;
 		this.deviceService = deviceService;
+		this.ratingRepository = ratingRepository;
+		this.ratioRepository = ratioRepository;
 	}
 
 	@Override
@@ -59,7 +65,7 @@ public class TrackServiceImpl implements TrackService {
 //			if(objects.get(0)[4] != null) nextTrack.setTimeexecute((String) objects.get(0)[4]);
 //			return nextTrack;
 //		}else{
-			return null;
+		return null;
 //		}
 	}
 
@@ -96,12 +102,12 @@ public class TrackServiceImpl implements TrackService {
 					title = DecodeUtil.Decode(id3v2Tag2.getTitle());
 					artist = DecodeUtil.Decode(id3v2Tag2.getArtist());
 				}
-				if(mp3File.hasId3v1Tag()) {
+				if (mp3File.hasId3v1Tag()) {
 					ID3v1 id3v1Tag1 = mp3File.getId3v1Tag();
-					if(title == null || title.equals("null") || title.isEmpty())
-					title = DecodeUtil.Decode(id3v1Tag1.getTitle());
-					if(artist == null || artist.equals("null") || artist.isEmpty())
-					artist = DecodeUtil.Decode(id3v1Tag1.getArtist());
+					if (title == null || title.equals("null") || title.isEmpty())
+						title = DecodeUtil.Decode(id3v1Tag1.getTitle());
+					if (artist == null || artist.equals("null") || artist.isEmpty())
+						artist = DecodeUtil.Decode(id3v1Tag1.getArtist());
 				}
 
 				if (title != null && !title.equals("null") && !title.isEmpty()) {
@@ -121,4 +127,36 @@ public class TrackServiceImpl implements TrackService {
 			}
 		}
 	}
+
+	@Override
+	public Track getRecommendedTracks(UUID userId) {
+		List<Object[]> ratings = ratingRepository.getRatingTracks(userId);
+
+		Map<String, Critic> critics = new HashMap<>();
+
+		for (Object[] rating : ratings) {
+			if (critics.containsKey(rating[0].toString())) {
+				critics.get(rating[0].toString()).addRating(new Rating(rating[1].toString(), Double.parseDouble(rating[2].toString())));
+			} else {
+				Critic critic = new Critic(rating[0].toString());
+				critic.addRating(new Rating(rating[1].toString(), Double.parseDouble(rating[2].toString())));
+				critics.put(critic.getName(), critic);
+			}
+		}
+
+		List<Critic> criticList = new ArrayList<>(critics.values());
+		Recommender recommender = new Recommender(criticList, new EuclideanDistance());
+		Critic critic2 = criticList.stream().filter(critic -> critic.getName().equals(userId.toString())).findFirst().get();
+		List<Ratio> ratios = recommender.recommendedTo(critic2);
+
+		if (ratings.isEmpty()) {
+			return null;
+		} else {
+			Track track = new Track();
+			track.setRecid(UUID.fromString(ratios.get(0).getName()));
+			return track;
+		}
+
+	}
+
 }

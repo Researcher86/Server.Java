@@ -1,5 +1,6 @@
 package ownradio.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +19,8 @@ import ownradio.repository.TrackRepository;
 import ownradio.service.impl.TrackServiceImpl;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -69,5 +72,10 @@ public class TrackServiceTest {
 		trackService.save(expected, correctFile);
 
 		assertThat(new File(expected.getPath()).exists(), is(true));
+	}
+
+	@Test
+	public void getRecommendedTracks() throws Exception {
+		System.out.println(trackService.getRecommendedTracks(UUID.fromString("2483d745-3bb5-43b7-8608-52a1fb7ce323")));
 	}
 }
