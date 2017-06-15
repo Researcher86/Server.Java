@@ -4,7 +4,8 @@ package ownradio.recommendation;
  * Коллаборативная фильтрация
  *
  * @author Tanat
- * @version 1.0 14.06.17.
+ * @version 1.1
+ * @since 14.06.17.
  */
 public interface CollaborativeFiltering {
 

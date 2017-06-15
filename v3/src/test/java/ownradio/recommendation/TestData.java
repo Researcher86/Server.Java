@@ -7,9 +7,10 @@ import java.util.List;
  * Класс для создания тестовых данных
  *
  * @author Tanat
- * @version 1.0 14.06.17.
+ * @version 1.1
+ * @since 14.06.17.
  */
-public class SimpleData {
+public class TestData {
 	public static List<Critic> create() {
 		List<Critic> criticList = new ArrayList<>();
 		Critic critic;

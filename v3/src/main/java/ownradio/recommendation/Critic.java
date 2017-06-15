@@ -3,12 +3,14 @@ package ownradio.recommendation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Класс хранит информацию о критиках и их оценках
  *
  * @author Tanat
- * @version 1.0 14.06.17.
+ * @version 1.1
+ * @since 14.06.17.
  */
 public class Critic {
 	private String name;
@@ -29,6 +31,20 @@ public class Critic {
 
 	public List<Rating> getRatings() {
 		return Collections.unmodifiableList(ratings);
+	}
+
+	public boolean ratingContains(Rating rating) {
+		return ratings.contains(rating);
+	}
+
+	/**
+	 * Получить список общих оценок с указанным критиком
+	 *
+	 * @param critic Критик
+	 * @return Список общих оценок
+	 */
+	public List<Rating> getEqualsRatings(Critic critic) {
+		return ratings.stream().filter(critic::ratingContains).collect(Collectors.toList());
 	}
 
 	public Rating getRatingByName(String name) {

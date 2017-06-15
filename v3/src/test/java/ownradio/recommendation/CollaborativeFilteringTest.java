@@ -8,10 +8,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Тестируем алгоритмы коллаборативной фильтрации
- *
  * @author Tanat
- * @version 1.0 14.06.17.
+ * @version 1.1
+ * @since 14.06.17.
  */
 public class CollaborativeFilteringTest {
 
@@ -23,12 +22,12 @@ public class CollaborativeFilteringTest {
 	private Critic gene;
 
 	private Critic findPersonByName(String name) {
-		return criticList.stream().filter(person1 -> person1.getName().equals(name)).findFirst().get();
+		return criticList.stream().filter(c -> c.equals(new Critic(name))).findFirst().get();
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		criticList = SimpleData.create();
+		criticList = TestData.create();
 		euclideanDistance = new EuclideanDistance();
 		correlationPearson = new CoefficientPearson();
 

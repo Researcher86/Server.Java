@@ -4,7 +4,8 @@ package ownradio.recommendation;
  * Класс для хранения рейтингов
  *
  * @author Tanat
- * @version 1.0 14.06.17.
+ * @version 1.1
+ * @since 14.06.17.
  */
 public class Rating {
 	private String name;

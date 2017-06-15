@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
  * Класс рекомендатель
  *
  * @author Tanat
- * @version 1.0 14.06.17.
+ * @version 1.1
+ * @since 14.06.17.
  */
 public class Recommender {
 	private List<Critic> criticList;
@@ -22,7 +23,7 @@ public class Recommender {
 	}
 
 	public Critic getCriticByName(String name) {
-		return criticList.stream().filter(critic -> critic.getName().equals(name)).findFirst().get();
+		return this.criticList.stream().filter(critic -> critic.equals(new Critic(name))).findFirst().get();
 	}
 
 	/**
@@ -32,7 +33,7 @@ public class Recommender {
 	 * @return Список коэффициентов сходства вкусов
 	 */
 	public List<Ratio> topMatches(Critic critic) {
-		return criticList.stream()
+		return this.criticList.stream()
 				.filter(c1 -> !c1.equals(critic))
 				.map(c1 -> new Ratio(c1.getName(), filteringInterface.similarity(critic, c1)))
 				.sorted(Comparator.comparing(Ratio::getPoint).reversed())
@@ -50,7 +51,7 @@ public class Recommender {
 		Map<Rating, Double> totals = new HashMap<>();
 		Map<Rating, Double> simSums = new HashMap<>();
 
-		criticList.stream()
+		this.criticList.stream()
 				.filter(other -> !other.equals(critic)) // сравнивать критика с собой же, не нужно
 				.forEach(other -> {
 					double sim = filteringInterface.similarity(critic, other);
@@ -58,7 +59,7 @@ public class Recommender {
 					if (sim > 0) {
 						other.getRatings().stream()
 								// оценивать только то, что критик еще не смотрел
-								.filter(rating -> !critic.getRatings().contains(rating) || critic.getRatingByName(rating.getName()).getPoint() == 0)
+								.filter(rating -> !critic.ratingContains(rating) || critic.getRatingByName(rating.getName()).getPoint() == 0)
 								.forEach(rating -> {
 									// Коэффициент подобия * Оценка
 									totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingByName(rating.getName()).getPoint() * sim);
