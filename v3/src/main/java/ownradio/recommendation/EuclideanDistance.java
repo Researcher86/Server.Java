@@ -12,13 +12,13 @@ public class EuclideanDistance implements Calculation {
 	@Override
 	public double similarity(Critic с1, Critic с2) {
 		// Если нет ни одной общей оценки, вернуть 0
-		if (с1.getEqualsRatings(с2).size() == 0) {
+		if (с1.getEqualsRatings(с2).count() == 0) {
 			return 0;
 		}
 
 		// Сложить квадраты разностей
-		double sumOfSquares = с1.getEqualsRatings(с2).stream()
-				.mapToDouble(r -> Math.pow(r.getPoint() - с2.getRatingByName(r.getName()).getPoint(), 2))
+		double sumOfSquares = с1.getEqualsRatings(с2)
+				.mapToDouble(r -> Math.pow(r.getPoint() - с2.getRatingPoint(r.getName()), 2))
 				.sum();
 
 		return 1 / (1 + sumOfSquares);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Класс рекомендатель
@@ -14,16 +15,12 @@ import java.util.stream.Collectors;
  * @since 14.06.17.
  */
 public class Recommender {
-	private List<Critic> criticList;
+	private final List<Critic> criticList;
 	private final Calculation calculation;
 
 	public Recommender(List<Critic> criticList, Calculation calculation) {
 		this.criticList = criticList;
 		this.calculation = calculation;
-	}
-
-	public Critic getCriticByName(String name) {
-		return criticList.stream().filter(critic -> critic.equals(new Critic(name))).findFirst().get();
 	}
 
 	/**
@@ -33,13 +30,11 @@ public class Recommender {
 	 * @return Список коэффициентов сходства
 	 */
 	public List<Ratio> topMatches(Critic critic) {
-		return criticList.stream()
-				.filter(c1 -> !c1.equals(critic))
-				.map(c1 -> new Ratio(c1.getName(), calculation.similarity(critic, c1)))
+		return criticsExcludeTo(critic)
+				.map(c -> new Ratio(c.getName(), calculation.similarity(critic, c)))
 				.sorted(Comparator.comparing(Ratio::getPoint).reversed())
 				.collect(Collectors.toList());
 	}
-
 
 	/**
 	 * Получить рекомендации для заданного критика, пользуясь взвешенным средним оценок, данных всеми остальными критиками
@@ -51,28 +46,33 @@ public class Recommender {
 		Map<Rating, Double> totals = new HashMap<>();
 		Map<Rating, Double> simSums = new HashMap<>();
 
-		criticList.stream()
-				.filter(other -> !other.equals(critic)) // сравнивать критика с собой же, не нужно
+		criticsExcludeTo(critic)
 				.forEach(other -> {
 					double sim = calculation.similarity(critic, other);
 					// игнорировать нулевые и отрицательные оценки
 					if (sim > 0) {
-						other.getRatings().stream()
-								// оценивать только то, что критик еще не смотрел
-								.filter(rating -> !critic.isLooking(rating))
-								.forEach(rating -> {
-									// Коэффициент подобия * Оценка
-									totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingPointByName(rating.getName()) * sim);
-									// Сумма коэффициентов подобия
-									simSums.put(rating, simSums.getOrDefault(rating, 0.0) + sim);
-								});
+						// оценивать только то, что критик еще не смотрел
+						other.notLookingTo(critic).forEach(rating -> {
+							// Коэффициент подобия * Оценка
+							totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingPoint(rating.getName()) * sim);
+							// Сумма коэффициентов подобия
+							simSums.put(rating, simSums.getOrDefault(rating, 0.0) + sim);
+						});
 					}
 				});
 
+		return getRatios(totals, simSums);
+	}
+
+	private List<Ratio> getRatios(Map<Rating, Double> totals, Map<Rating, Double> simSums) {
 		return totals.entrySet().stream()
 				.map(entry -> new Ratio(entry.getKey().getName(), entry.getValue() / simSums.get(entry.getKey())))
 				.sorted(Comparator.comparing(Ratio::getPoint).reversed())
 				.collect(Collectors.toList());
+	}
+
+	private Stream<Critic> criticsExcludeTo(Critic critic) {
+		return criticList.stream().filter(c -> !c.equals(critic));
 	}
 
 }

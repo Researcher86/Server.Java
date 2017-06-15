@@ -19,6 +19,7 @@ public class RecommenderTest {
 	private CoefficientPearson correlationPearson;
 	private SimpleCalculation simpleCalculation;
 	private Recommender recommender;
+	private Critic toby;
 
 	@Before
 	public void setUp() throws Exception {
@@ -26,12 +27,12 @@ public class RecommenderTest {
 		euclideanDistance = new EuclideanDistance();
 		correlationPearson = new CoefficientPearson();
 		simpleCalculation = new SimpleCalculation();
+		toby = criticList.stream().filter(critic -> critic.equals(new Critic("Toby"))).findFirst().get();
 	}
 
 	@Test
 	public void topMatches() throws Exception {
 		recommender = new Recommender(criticList, correlationPearson);
-		Critic toby = recommender.getCriticByName("Toby");
 
 		List<Ratio> ratios = recommender.topMatches(toby);
 
@@ -48,7 +49,6 @@ public class RecommenderTest {
 	@Test
 	public void getRecommendationsEuclideanDistance() throws Exception {
 		recommender = new Recommender(criticList, euclideanDistance);
-		Critic toby = recommender.getCriticByName("Toby");
 
 		List<Ratio> ratios = recommender.recommendedTo(toby);
 
@@ -62,7 +62,6 @@ public class RecommenderTest {
 	@Test
 	public void getRecommendationsCorrelationPearson() throws Exception {
 		recommender = new Recommender(criticList, correlationPearson);
-		Critic toby = recommender.getCriticByName("Toby");
 
 		List<Ratio> ratios = recommender.recommendedTo(toby);
 
@@ -74,9 +73,8 @@ public class RecommenderTest {
 	}
 
 	@Test
-	public void getRecommendationsMyCalcRatio() throws Exception {
+	public void getRecommendationsSimpleCalculation() throws Exception {
 		recommender = new Recommender(criticList, simpleCalculation);
-		Critic toby = recommender.getCriticByName("Toby");
 
 		List<Ratio> ratios = recommender.recommendedTo(toby);
 

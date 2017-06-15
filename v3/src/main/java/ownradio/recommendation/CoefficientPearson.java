@@ -11,7 +11,7 @@ public class CoefficientPearson implements Calculation {
 
 	@Override
 	public double similarity(Critic с1, Critic с2) {
-		long count = с1.getEqualsRatings(с2).size();
+		long count = с1.getEqualsRatings(с2).count();
 
 		// Если нет ни одной общей оценки, вернуть 0
 		if (count == 0) {
@@ -19,15 +19,15 @@ public class CoefficientPearson implements Calculation {
 		}
 
 		// Вычислить сумму всех предпочтений
-		double sum1 = с1.getEqualsRatings(с2).stream().mapToDouble(Rating::getPoint).sum();
-		double sum2 = с2.getEqualsRatings(с1).stream().mapToDouble(Rating::getPoint).sum();
+		double sum1 = с1.getEqualsRatings(с2).mapToDouble(Rating::getPoint).sum();
+		double sum2 = с2.getEqualsRatings(с1).mapToDouble(Rating::getPoint).sum();
 
 		// Вычислить сумму квадратов
-		double sum1Sq = с1.getEqualsRatings(с2).stream().mapToDouble(rating -> Math.pow(rating.getPoint(), 2)).sum();
-		double sum2Sq = с2.getEqualsRatings(с1).stream().mapToDouble(rating -> Math.pow(rating.getPoint(), 2)).sum();
+		double sum1Sq = с1.getEqualsRatings(с2).mapToDouble(rating -> Math.pow(rating.getPoint(), 2)).sum();
+		double sum2Sq = с2.getEqualsRatings(с1).mapToDouble(rating -> Math.pow(rating.getPoint(), 2)).sum();
 
 		// Вычислить сумму произведений
-		double pSum = с1.getEqualsRatings(с2).stream().mapToDouble(r -> r.getPoint() * с2.getRatingByName(r.getName()).getPoint()).sum();
+		double pSum = с1.getEqualsRatings(с2).mapToDouble(r -> r.getPoint() * с2.getRatingPoint(r.getName())).sum();
 
 		// Вычислить коэффициент Пирсона
 		double num = pSum - (sum1 * sum2 / count);

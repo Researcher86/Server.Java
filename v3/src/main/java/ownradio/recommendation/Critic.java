@@ -1,9 +1,8 @@
 package ownradio.recommendation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Класс хранит информацию о критиках и их оценках
@@ -29,38 +28,14 @@ public class Critic {
 		ratings.add(rating);
 	}
 
-	public List<Rating> getRatings() {
-		return Collections.unmodifiableList(ratings);
-	}
-
-	/**
-	 * Проверяем оценивал ли критик
-	 *
-	 * @param rating рейтинг
-	 * @return true если оценивал
-	 */
-	public boolean ratingContains(Rating rating) {
-		return ratings.contains(rating);
-	}
-
 	/**
 	 * Получить список общих оценок с указанным критиком
 	 *
 	 * @param critic критик
 	 * @return список общих оценок
 	 */
-	public List<Rating> getEqualsRatings(Critic critic) {
-		return ratings.stream().filter(critic::ratingContains).collect(Collectors.toList());
-	}
-
-	/**
-	 * Возвращаем рейтинг по его названию
-	 *
-	 * @param name наименование рейтинга
-	 * @return рейтинг
-	 */
-	public Rating getRatingByName(String name) {
-		return ratings.stream().filter(rating -> rating.getName().equals(name)).findFirst().get();
+	public Stream<Rating> getEqualsRatings(Critic critic) {
+		return ratings.stream().filter(rating -> critic.ratings.contains(rating));
 	}
 
 	/**
@@ -69,18 +44,18 @@ public class Critic {
 	 * @param name наименование рейтинга
 	 * @return оценка
 	 */
-	public double getRatingPointByName(String name) {
-		return getRatingByName(name).getPoint();
+	public double getRatingPoint(String name) {
+		return ratings.stream().filter(rating -> rating.getName().equals(name)).findFirst().get().getPoint();
 	}
 
 	/**
-	 * Проверка того что критик смотрел
+	 * Поиск того что переданный критик не смотрел
 	 *
-	 * @param rating рейтинг
-	 * @return true если смотрел
+	 * @param critic критик
+	 * @return список чего не смотрел
 	 */
-	public boolean isLooking(Rating rating) {
-		return ratingContains(rating) && getRatingPointByName(rating.getName()) != 0;
+	public Stream<Rating> notLookingTo(Critic critic) {
+		return ratings.stream().filter(rating -> !critic.ratings.contains(rating) || critic.getRatingPoint(rating.getName()) == 0);
 	}
 
 	@Override
