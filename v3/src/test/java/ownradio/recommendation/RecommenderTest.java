@@ -17,6 +17,7 @@ public class RecommenderTest {
 	private List<Critic> criticList;
 	private EuclideanDistance euclideanDistance;
 	private CoefficientPearson correlationPearson;
+	private SimpleCalculation simpleCalculation;
 	private Recommender recommender;
 
 	@Before
@@ -24,6 +25,7 @@ public class RecommenderTest {
 		criticList = TestData.create();
 		euclideanDistance = new EuclideanDistance();
 		correlationPearson = new CoefficientPearson();
+		simpleCalculation = new SimpleCalculation();
 	}
 
 	@Test
@@ -68,6 +70,20 @@ public class RecommenderTest {
 				new Ratio("The Night Listener", 3.3477895267131017),
 				new Ratio("Lady in the Water", 2.8325499182641614),
 				new Ratio("Just My Luck", 2.530980703765565)
+		));
+	}
+
+	@Test
+	public void getRecommendationsMyCalcRatio() throws Exception {
+		recommender = new Recommender(criticList, simpleCalculation);
+		Critic toby = recommender.getCriticByName("Toby");
+
+		List<Ratio> ratios = recommender.recommendedTo(toby);
+
+		assertThat(ratios, hasItems(
+				new Ratio("The Night Listener", 3.3814993954050787),
+				new Ratio("Lady in the Water", 2.8268115942028986),
+				new Ratio("Just My Luck", 2.340290381125227)
 		));
 	}
 

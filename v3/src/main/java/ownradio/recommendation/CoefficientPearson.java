@@ -1,13 +1,13 @@
 package ownradio.recommendation;
 
 /**
- * Коэффициент корреляции Пирсона
+ * Расчет суммы схожести интересов по формуле "Коэффициент корреляции Пирсона"
  *
  * @author Tanat
  * @version 1.1
  * @since 14.06.17.
  */
-public class CoefficientPearson implements CollaborativeFiltering {
+public class CoefficientPearson implements Calculation {
 
 	@Override
 	public double similarity(Critic с1, Critic с2) {

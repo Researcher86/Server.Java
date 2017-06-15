@@ -1,13 +1,13 @@
 package ownradio.recommendation;
 
 /**
- * Оценка по евклидову расстоянию
+ * Расчет суммы схожести интересов по формуле "Евклидового расстояния"
  *
  * @author Tanat
  * @version 1.1
  * @since 14.06.17.
  */
-public class EuclideanDistance implements CollaborativeFiltering {
+public class EuclideanDistance implements Calculation {
 
 	@Override
 	public double similarity(Critic с1, Critic с2) {

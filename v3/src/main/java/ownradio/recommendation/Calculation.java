@@ -1,13 +1,13 @@
 package ownradio.recommendation;
 
 /**
- * Коллаборативная фильтрация
+ * Интерфейс расчета суммы схожести интересов
  *
  * @author Tanat
  * @version 1.1
  * @since 14.06.17.
  */
-public interface CollaborativeFiltering {
+public interface Calculation {
 
 	/**
 	 * Возвращает оценку подобия между двумя критиками

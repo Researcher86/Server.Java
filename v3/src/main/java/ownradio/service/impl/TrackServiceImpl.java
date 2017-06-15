@@ -146,7 +146,7 @@ public class TrackServiceImpl implements TrackService {
 
 		List<Critic> criticList = new ArrayList<>(critics.values());
 		Recommender recommender = new Recommender(criticList, new EuclideanDistance());
-		Critic critic2 = criticList.stream().filter(critic -> critic.getName().equals(userId.toString())).findFirst().get();
+		Critic critic2 = criticList.stream().filter(critic -> critic.equals(new Critic(userId.toString()))).findFirst().get();
 		List<Ratio> ratios = recommender.recommendedTo(critic2);
 
 		if (ratings.isEmpty()) {

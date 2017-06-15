@@ -15,27 +15,27 @@ import java.util.stream.Collectors;
  */
 public class Recommender {
 	private List<Critic> criticList;
-	private final CollaborativeFiltering filteringInterface;
+	private final Calculation calculation;
 
-	public Recommender(List<Critic> criticList, CollaborativeFiltering filteringInterface) {
+	public Recommender(List<Critic> criticList, Calculation calculation) {
 		this.criticList = criticList;
-		this.filteringInterface = filteringInterface;
+		this.calculation = calculation;
 	}
 
 	public Critic getCriticByName(String name) {
-		return this.criticList.stream().filter(critic -> critic.equals(new Critic(name))).findFirst().get();
+		return criticList.stream().filter(critic -> critic.equals(new Critic(name))).findFirst().get();
 	}
 
 	/**
 	 * Возвращает список наилучших соответствий для критика
 	 *
 	 * @param critic Критик
-	 * @return Список коэффициентов сходства вкусов
+	 * @return Список коэффициентов сходства
 	 */
 	public List<Ratio> topMatches(Critic critic) {
-		return this.criticList.stream()
+		return criticList.stream()
 				.filter(c1 -> !c1.equals(critic))
-				.map(c1 -> new Ratio(c1.getName(), filteringInterface.similarity(critic, c1)))
+				.map(c1 -> new Ratio(c1.getName(), calculation.similarity(critic, c1)))
 				.sorted(Comparator.comparing(Ratio::getPoint).reversed())
 				.collect(Collectors.toList());
 	}
@@ -51,10 +51,10 @@ public class Recommender {
 		Map<Rating, Double> totals = new HashMap<>();
 		Map<Rating, Double> simSums = new HashMap<>();
 
-		this.criticList.stream()
+		criticList.stream()
 				.filter(other -> !other.equals(critic)) // сравнивать критика с собой же, не нужно
 				.forEach(other -> {
-					double sim = filteringInterface.similarity(critic, other);
+					double sim = calculation.similarity(critic, other);
 					// игнорировать нулевые и отрицательные оценки
 					if (sim > 0) {
 						other.getRatings().stream()
