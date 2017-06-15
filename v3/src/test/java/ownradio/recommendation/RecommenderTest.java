@@ -3,6 +3,7 @@ package ownradio.recommendation;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
@@ -74,14 +75,26 @@ public class RecommenderTest {
 
 	@Test
 	public void getRecommendationsSimpleCalculation() throws Exception {
-		recommender = new Recommender(criticList, simpleCalculation);
+		Critic c1 = new Critic("User1");
+		c1.addRating(new Rating("Track1", 1));
+		c1.addRating(new Rating("Track2", 1));
+		c1.addRating(new Rating("Track3", 3));
+		c1.addRating(new Rating("Track4", 3));
+		c1.addRating(new Rating("Track6", -2));
 
-		List<Ratio> ratios = recommender.recommendedTo(toby);
+		Critic c2 = new Critic("User2");
+		c2.addRating(new Rating("Track1", 1));
+		c2.addRating(new Rating("Track2", 1));
+		c2.addRating(new Rating("Track3", 1));
+		c2.addRating(new Rating("Track4", 3));
+		c2.addRating(new Rating("Track5", 3));
+
+		recommender = new Recommender(Arrays.asList(c1, c2), simpleCalculation);
+
+		List<Ratio> ratios = recommender.recommendedTo(c1);
 
 		assertThat(ratios, hasItems(
-				new Ratio("The Night Listener", 3.3814993954050787),
-				new Ratio("Lady in the Water", 2.8268115942028986),
-				new Ratio("Just My Luck", 2.340290381125227)
+				new Ratio("Track5", 3)
 		));
 	}
 
