@@ -6,6 +6,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertThat;
 
@@ -74,12 +76,13 @@ public class RecommenderTest {
 	}
 
 	@Test
-	public void getRecommendationsSimpleCalculation() throws Exception {
+	public void getRecommendationsSimpleCalculationThenTrack7() throws Exception {
 		Critic c1 = new Critic("User1");
 		c1.addRating(new Rating("Track1", 1));
 		c1.addRating(new Rating("Track2", 1));
 		c1.addRating(new Rating("Track3", 3));
 		c1.addRating(new Rating("Track4", 3));
+		c1.addRating(new Rating("Track5", 3));
 		c1.addRating(new Rating("Track6", -2));
 
 		Critic c2 = new Critic("User2");
@@ -89,13 +92,54 @@ public class RecommenderTest {
 		c2.addRating(new Rating("Track4", 3));
 		c2.addRating(new Rating("Track5", 3));
 
-		recommender = new Recommender(Arrays.asList(c1, c2), simpleCalculation);
+		Critic c3 = new Critic("User3");
+		c3.addRating(new Rating("Track1", 1));
+		c3.addRating(new Rating("Track2", 1));
+		c3.addRating(new Rating("Track3", 1));
+		c3.addRating(new Rating("Track4", 3));
+		c3.addRating(new Rating("Track5", 3));
+		c3.addRating(new Rating("Track6", 2));
+		c3.addRating(new Rating("Track7", 1));
+
+		recommender = new Recommender(Arrays.asList(c1, c2, c3), simpleCalculation);
 
 		List<Ratio> ratios = recommender.recommendedTo(c1);
 
 		assertThat(ratios, hasItems(
-				new Ratio("Track5", 3)
+				new Ratio("Track7", 1)
 		));
+	}
+
+	@Test
+	public void getRecommendationsSimpleCalculationThenEmpty() throws Exception {
+		Critic c1 = new Critic("User1");
+		c1.addRating(new Rating("Track1", 1));
+		c1.addRating(new Rating("Track2", 1));
+		c1.addRating(new Rating("Track3", 3));
+		c1.addRating(new Rating("Track4", 3));
+		c1.addRating(new Rating("Track5", 3));
+		c1.addRating(new Rating("Track6", -2));
+
+		Critic c2 = new Critic("User2");
+		c2.addRating(new Rating("Track1", 1));
+		c2.addRating(new Rating("Track2", 1));
+		c2.addRating(new Rating("Track3", 1));
+		c2.addRating(new Rating("Track4", 3));
+		c2.addRating(new Rating("Track5", 3));
+
+		Critic c3 = new Critic("User3");
+		c3.addRating(new Rating("Track1", 1));
+		c3.addRating(new Rating("Track2", 1));
+		c3.addRating(new Rating("Track3", 1));
+		c3.addRating(new Rating("Track4", 3));
+		c3.addRating(new Rating("Track5", 3));
+		c3.addRating(new Rating("Track6", 2));
+
+		recommender = new Recommender(Arrays.asList(c1, c2, c3), simpleCalculation);
+
+		List<Ratio> ratios = recommender.recommendedTo(c1);
+
+		assertThat(ratios, is(empty()));
 	}
 
 }
