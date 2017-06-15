@@ -12,9 +12,9 @@ public interface Calculation {
 	/**
 	 * Возвращает оценку подобия между двумя критиками
 	 *
-	 * @param с1 Исходный критик
-	 * @param с2 Сравниваемы критик
-	 * @return Оценка подобия
+	 * @param с1 исходный критик
+	 * @param с2 сравниваемы критик
+	 * @return оценка подобия
 	 */
 	double similarity(Critic с1, Critic с2);
 }

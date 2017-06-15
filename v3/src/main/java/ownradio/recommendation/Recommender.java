@@ -44,8 +44,8 @@ public class Recommender {
 	/**
 	 * Получить рекомендации для заданного критика, пользуясь взвешенным средним оценок, данных всеми остальными критиками
 	 *
-	 * @param critic Критик
-	 * @return Список рекомендаций
+	 * @param critic критик
+	 * @return список рекомендаций
 	 */
 	public List<Ratio> recommendedTo(Critic critic) {
 		Map<Rating, Double> totals = new HashMap<>();
@@ -59,10 +59,10 @@ public class Recommender {
 					if (sim > 0) {
 						other.getRatings().stream()
 								// оценивать только то, что критик еще не смотрел
-								.filter(rating -> !critic.ratingContains(rating) || critic.getRatingByName(rating.getName()).getPoint() == 0)
+								.filter(rating -> !critic.isLooking(rating))
 								.forEach(rating -> {
 									// Коэффициент подобия * Оценка
-									totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingByName(rating.getName()).getPoint() * sim);
+									totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingPointByName(rating.getName()) * sim);
 									// Сумма коэффициентов подобия
 									simSums.put(rating, simSums.getOrDefault(rating, 0.0) + sim);
 								});
