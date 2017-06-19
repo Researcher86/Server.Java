@@ -14,15 +14,13 @@ import java.util.UUID;
  * @author Alpenov Tanat
  */
 public interface TrackRepository extends JpaRepository<Track, UUID> {
-//	@Query(value = "select CAST(getnexttrackid(?1) AS VARCHAR)", nativeQuery = true)
-	@Query(value = "select t from Track t, Rating r where t = r.track AND r.user.recid = ?1 " +
-			" and r.ratingsum >= 0" +
-			" ORDER BY random()")
+	//	@Query(value = "select CAST(getnexttrackid(?1) AS VARCHAR)", nativeQuery = true)
+	@Query(value = "select t from Track t, Rating r where t = r.track and r.user.recid = ?1 and r.ratingsum >= 0 order by random()")
 	List<Track> getNextTrackId(UUID deviceId, Pageable pageable);
 
 //	@Query(value = "select * from getnexttrack_v2(?1)", nativeQuery = true)
 //	List<Object[]> getNextTrackV2(UUID deviceId);
 
-	@Query(value = "select * from getnexttrack_v2(?1)", nativeQuery = true)
-	List<String[]> getNextTrackV2(UUID deviceId);
+	@Query(value = "SELECT * FROM getnexttrack_v2(?1)", nativeQuery = true)
+	List<Object[]> getNextTrackV2(UUID deviceId);
 }

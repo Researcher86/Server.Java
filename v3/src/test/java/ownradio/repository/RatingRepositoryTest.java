@@ -18,10 +18,9 @@ import static org.junit.Assert.*;
 /**
  * Created by a.polunina on 10.11.2016.
  */
-@ActiveProfiles("prod")
+@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@DataJpaTest
 public class RatingRepositoryTest {
 	@Autowired
 	private RatingRepository ratingRepository;

@@ -6,7 +6,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import ownradio.domain.Device;
 import ownradio.domain.History;
 import ownradio.domain.Track;
@@ -20,25 +23,33 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+@ActiveProfiles("dev")
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@SpringBootTest
+@Transactional
 public class HistoryRepositoryTest {
 	@Autowired
 	private HistoryRepository historyRepository;
 
 	@Autowired
-	private TestEntityManager entityManager;
+	private UserRepository userRepository;
+
+	@Autowired
+	private DeviceRepository deviceRepository;
+
+	@Autowired
+	private TrackRepository trackRepository;
 
 	private History history;
 
 	@Before
 	public void setUp() throws Exception {
-		User user = entityManager.persist(new User());
-		Device device = entityManager.persist(new Device(user, "1"));
-		Track track = entityManager.persist(new Track("1", device, "1", 0, "", 0, null, null, null, 1));
+		User user = userRepository.save(new User());
+		Device device = deviceRepository.save(new Device(user, "1"));
+		Track track = trackRepository.save(new Track("1", device, "1", 0, "", 0, null, null, null, 1));
 
 		history = new History(track, Calendar.getInstance(), 0, "post", 1, device, 1, "");
-		entityManager.persist(history);
+		historyRepository.save(history);
 	}
 
 	@Test

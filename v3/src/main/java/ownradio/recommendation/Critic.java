@@ -24,6 +24,11 @@ public class Critic {
 		return name;
 	}
 
+	/**
+	 * Добавить новый рейтинг/оценку текущему критику
+	 *
+	 * @param rating рейтинг
+	 */
 	public void addRating(Rating rating) {
 		ratings.add(rating);
 	}

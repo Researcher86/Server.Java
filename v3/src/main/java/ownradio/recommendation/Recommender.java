@@ -26,8 +26,8 @@ public class Recommender {
 	/**
 	 * Возвращает список наилучших соответствий для критика
 	 *
-	 * @param critic Критик
-	 * @return Список коэффициентов сходства
+	 * @param critic критик
+	 * @return список коэффициентов сходства
 	 */
 	public List<Ratio> topMatches(Critic critic) {
 		return criticsExcludeTo(critic)
@@ -46,20 +46,19 @@ public class Recommender {
 		Map<Rating, Double> totals = new HashMap<>();
 		Map<Rating, Double> simSums = new HashMap<>();
 
-		criticsExcludeTo(critic)
-				.forEach(other -> {
-					double sim = calculation.similarity(critic, other);
-					// игнорировать нулевые и отрицательные оценки
-					if (sim > 0) {
-						// оценивать только то, что критик еще не смотрел
-						other.notLookingTo(critic).forEach(rating -> {
-							// Коэффициент подобия * Оценка
-							totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingPoint(rating.getName()) * sim);
-							// Сумма коэффициентов подобия
-							simSums.put(rating, simSums.getOrDefault(rating, 0.0) + sim);
-						});
-					}
+		criticsExcludeTo(critic).forEach(other -> {
+			double sim = calculation.similarity(critic, other);
+			// игнорировать нулевые и отрицательные оценки
+			if (sim > 0) {
+				// оценивать только то, что критик еще не смотрел
+				other.notLookingTo(critic).forEach(rating -> {
+					// Коэффициент подобия * Оценка
+					totals.put(rating, totals.getOrDefault(rating, 0.0) + other.getRatingPoint(rating.getName()) * sim);
+					// Сумма коэффициентов подобия
+					simSums.put(rating, simSums.getOrDefault(rating, 0.0) + sim);
 				});
+			}
+		});
 
 		return getRatios(totals, simSums);
 	}

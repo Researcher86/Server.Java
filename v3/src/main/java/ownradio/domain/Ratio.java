@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 /**
  * Сущность для хранения коэффициентов схожести интересов
@@ -22,12 +23,12 @@ public class Ratio extends AbstractEntity {
 //	@ManyToOne
 	@JoinColumn(name = "userid")
 	@Column(nullable = false)
-	private User userid1;
+	private UUID userid1;
 
 //	@ManyToOne
 	@JoinColumn(name = "userid")
 	@Column(nullable = false)
-	private User userid2;
+	private UUID userid2;
 
 	private Integer ratio;
 }

@@ -18,7 +18,6 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "devices")
 public class Device extends AbstractEntity {
@@ -26,7 +25,6 @@ public class Device extends AbstractEntity {
 	@JoinColumn(name = "userid")
 	private User user;
 
-//	private String name;
 	public Device (User user, String name){
 		setRecname(name);
 		setUser(user);

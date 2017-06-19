@@ -23,7 +23,7 @@ public class HistoryServiceTest {
 
 	@Test
 	public void getTracksHistoryByDevice() throws Exception {
-		historyService.getTracksHistoryByDevice(UUID.fromString("00000000-0000-0000-0000-000000000002"), null);
+		historyService.getTracksHistoryByDevice(UUID.fromString("00000000-0000-0000-0000-000000000002"), 0);
 	}
 
 }

@@ -41,7 +41,7 @@ public class CalculationTest {
 	}
 
 	@Test
-	public void myCalcRatio() throws Exception {
+	public void simpleCalculation() throws Exception {
 		Critic c1 = new Critic("User1");
 		c1.addRating(new Rating("Track1", 1));
 		c1.addRating(new Rating("Track2", 1));
